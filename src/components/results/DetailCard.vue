@@ -21,16 +21,41 @@
     </div>
   </div>
 </template>
+
 <script setup>
 import { computed } from "vue";
-const props = defineProps({ result: { type: Object, required: true }, votesStore: { type: Object, required: true } });
-const attrs = [
-  { key: "avg_fisico", label: "Físico" }, { key: "avg_passe", label: "Passe" },
-  { key: "avg_drible", label: "Drible" }, { key: "avg_dominio", label: "Domínio" },
-  { key: "avg_chute", label: "Chute" }, { key: "avg_marcacao", label: "Marcação" },
-];
+
+const props = defineProps({
+  result: { type: Object, required: true },
+  votesStore: { type: Object, required: true },
+});
+
+const attrs = computed(() => {
+  if (props.result.player_position === "GOL") {
+    return [
+      { key: "avg_fisico",   label: "Físico" },
+      { key: "avg_passe",    label: "Pés" },
+      { key: "avg_drible",   label: "Reflexo" },
+      { key: "avg_dominio",  label: "Visão" },
+      { key: "avg_chute",    label: "Motiv." },
+      { key: "avg_marcacao", label: "Fé" },
+    ];
+  }
+  return [
+    { key: "avg_fisico",   label: "Físico" },
+    { key: "avg_passe",    label: "Passe" },
+    { key: "avg_drible",   label: "Drible" },
+    { key: "avg_dominio",  label: "Domínio" },
+    { key: "avg_chute",    label: "Chute" },
+    { key: "avg_marcacao", label: "Marcação" },
+  ];
+});
+
 const cardClass = computed(() => props.result.card_type || "bronze");
 const score = computed(() => props.votesStore.avgToScore(props.result.overall_score) ?? "—");
-const initials = computed(() => { const parts = (props.result.player_name || "??").trim().split(" "); return parts.length >= 2 ? parts[0][0] + parts[parts.length - 1][0] : parts[0].slice(0, 2); });
+const initials = computed(() => {
+  const parts = (props.result.player_name || "??").trim().split(" ");
+  return parts.length >= 2 ? parts[0][0] + parts[parts.length - 1][0] : parts[0].slice(0, 2);
+});
 function fmt(v) { return v != null ? Number(v).toFixed(1) : "—"; }
 </script>
